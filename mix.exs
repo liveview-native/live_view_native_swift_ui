@@ -4,9 +4,9 @@ defmodule LiveViewNativeSwiftUi.MixProject do
   def project do
     [
       app: :live_view_native_swift_ui,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.13",
-      description: "LiveView Native platform library for SwiftUI",
+      description: "LiveView Native platform for SwiftUI",
       package: package(),
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -25,7 +25,8 @@ defmodule LiveViewNativeSwiftUi.MixProject do
     [
       {:jason, "~> 1.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:live_view_native_platform, "~> 0.0.1"},
+      {:inflex, "~> 2.0.0"},
+      {:live_view_native_platform, "~> 0.0.2"}
     ]
   end
 

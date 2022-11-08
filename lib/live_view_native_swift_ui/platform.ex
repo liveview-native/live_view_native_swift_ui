@@ -1,7 +1,6 @@
 defmodule LiveViewNativeSwiftUi.Platform do
-  import LiveViewNativePlatform.Utils, only: [check_dependency!: 1, check_platform!: 2, run_command!: 3]
-
-  alias LiveViewNativeSwiftUi.Modifiers
+  import LiveViewNativePlatform.Utils,
+    only: [check_dependency!: 1, check_platform!: 2, run_command!: 3]
 
   defstruct [
     :app_name,
@@ -13,13 +12,13 @@ defmodule LiveViewNativeSwiftUi.Platform do
     xcode_path: "/Applications/Xcode.app"
   ]
 
-  defimpl LiveViewNativePlatform.Platform do
+  defimpl LiveViewNativePlatform do
     require Logger
 
-    def platform_meta(_struct) do
-      %LiveViewNativePlatform.Metadata{
+    def context(_struct) do
+      %LiveViewNativePlatform.Context{
+        modifiers: %LiveViewNativeSwiftUi.Modifiers{},
         platform_id: :ios,
-        modifiers: LiveViewNativeSwiftUi.Modifiers,
         template_namespace: SwiftUi
       }
     end
@@ -55,8 +54,17 @@ defmodule LiveViewNativeSwiftUi.Platform do
 
       # Get the Simulator device information using the result of `xcrun simctl list --json devices available`
       Logger.info("Checking for available devices.")
-      %{"devices" => devices} = run_command!("xcrun", ["simctl", "list", "--json", "devices", "available"], format: :json)
-      devices_for_os = Map.get(devices, "com.apple.CoreSimulator.SimRuntime.#{simulator_os}-#{simulator_os_version}", [])
+
+      %{"devices" => devices} =
+        run_command!("xcrun", ["simctl", "list", "--json", "devices", "available"], format: :json)
+
+      devices_for_os =
+        Map.get(
+          devices,
+          "com.apple.CoreSimulator.SimRuntime.#{simulator_os}-#{simulator_os_version}",
+          []
+        )
+
       device_info = Enum.find(devices_for_os, &(&1["name"] == simulator_device))
 
       # Run the app in the specified Simulator if it exists.
@@ -70,17 +78,55 @@ defmodule LiveViewNativeSwiftUi.Platform do
           File.mkdir(build_path)
 
           # Build a project bundle for the Simulator
-          Logger.info("Building #{app_name}.app for #{simulator_device} (#{simulator_os} #{simulator_os_version})...")
-          run_command!("xcrun", ["xcodebuild", "-scheme", app_name, "-project", Path.expand(project_path), "-configuration", "Debug", "-destination", "id=#{udid}", "-derivedDataPath", build_path], [])
+          Logger.info(
+            "Building #{app_name}.app for #{simulator_device} (#{simulator_os} #{simulator_os_version})..."
+          )
+
+          run_command!(
+            "xcrun",
+            [
+              "xcodebuild",
+              "-scheme",
+              app_name,
+              "-project",
+              Path.expand(project_path),
+              "-configuration",
+              "Debug",
+              "-destination",
+              "id=#{udid}",
+              "-derivedDataPath",
+              build_path
+            ],
+            []
+          )
 
           # Run the Simulator
-          Logger.info("Running simulator for #{simulator_device} (#{simulator_os} #{simulator_os_version})...")
-          simulator_path = Path.join(xcode_path, "Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator")
+          Logger.info(
+            "Running simulator for #{simulator_device} (#{simulator_os} #{simulator_os_version})..."
+          )
+
+          simulator_path =
+            Path.join(
+              xcode_path,
+              "Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator"
+            )
+
           run_command!(simulator_path, ["-CurrentDeviceUDID", udid], [])
 
           # Install the project bundle in the Simulator and launch it
           Logger.info("Running #{app_name}.app in simulator...")
-          run_command!("xcrun", ["simctl", "install", udid, "#{build_path}/Build/Products/Debug-iphonesimulator/#{app_name}.app"], [])
+
+          run_command!(
+            "xcrun",
+            [
+              "simctl",
+              "install",
+              udid,
+              "#{build_path}/Build/Products/Debug-iphonesimulator/#{app_name}.app"
+            ],
+            []
+          )
+
           run_command!("xcrun", ["simctl", "launch", udid, bundle_name], [])
 
         device_info ->
