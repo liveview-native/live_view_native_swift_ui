@@ -1,6 +1,6 @@
 # LiveViewNativeSwiftUi
 
-This library is **experimental** in the current implementation. As we continue to develop the LiveView Natie ecosystem this library will likely see rapid evolution and changes.
+This library is **experimental** in the current implementation. As we continue to develop the LiveView Native ecosystem this library will likely see rapid evolution and changes.
 
 **TODO: Add description**
 
