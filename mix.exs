@@ -25,7 +25,6 @@ defmodule LiveViewNativeSwiftUi.MixProject do
     [
       {:jason, "~> 1.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:inflex, "~> 2.0.0"},
       {:live_view_native_platform, "~> 0.0.2"}
     ]
   end
