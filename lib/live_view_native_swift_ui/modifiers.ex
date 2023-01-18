@@ -9,11 +9,8 @@ defmodule LiveViewNativeSwiftUi.Modifiers do
     :tint
   ]
 
-  def encode_key(key), do: Inflex.camelize("#{key}", :lower)
-
   def encode_map(%{} = map) do
     map
-    |> Enum.map(fn {key, value} -> {encode_key(key), value} end)
     |> Enum.into(%{})
   end
 
@@ -30,7 +27,7 @@ defmodule LiveViewNativeSwiftUi.Modifiers do
               modifier =
                 props
                 |> Modifiers.encode_map()
-                |> Map.put(:type, Modifiers.encode_key(key))
+                |> Map.put(:type, key)
 
               acc ++ [modifier]
 
