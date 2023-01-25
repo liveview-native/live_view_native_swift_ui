@@ -19,6 +19,7 @@ defmodule LiveViewNativeSwiftUi.Platform do
       %LiveViewNativePlatform.Context{
         modifiers: %LiveViewNativeSwiftUi.Modifiers{},
         platform_id: :ios,
+        template_engine: LiveViewNative.Engine,
         template_namespace: SwiftUi
       }
     end
