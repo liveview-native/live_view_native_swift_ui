@@ -38,7 +38,6 @@ defmodule LiveViewNativeSwiftUi.Modifiers do
               acc
           end
         end)
-        |> IO.inspect()
 
       case modifiers do
         [] ->
