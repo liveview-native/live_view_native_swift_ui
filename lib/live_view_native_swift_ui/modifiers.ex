@@ -1,27 +1,30 @@
 defmodule LiveViewNativeSwiftUi.Modifiers do
   @moduledoc false
   defstruct [
-    :frame,
-    :list_row_insets,
-    :list_row_separator,
-    :navigation_title,
-    :padding,
-    :tint
+    stack: []
   ]
 
   def encode_map(%{} = map) do
-    map
-    |> Enum.into(%{})
+    Enum.into(map, %{})
+  end
+
+  defimpl LiveViewNativePlatform.Modifiers do
+    def append(%{stack: stack} = modifiers, modifier) do
+      stack = stack || []
+
+      %{modifiers | stack: stack ++ [modifier]}
+    end
   end
 
   defimpl Phoenix.HTML.Safe do
     alias LiveViewNativeSwiftUi.Modifiers
 
-    def to_iodata(data) do
+    def to_iodata(%{stack: stack}) do
       modifiers =
-        data
-        |> Map.from_struct()
-        |> Enum.reduce([], fn {key, props}, acc ->
+        Enum.reduce(stack, [], fn %modifier_schema{} = modifier, acc ->
+          key = apply(modifier_schema, :modifier_name, [])
+          props = apply(modifier_schema, :to_map, [modifier])
+
           case props do
             %{} = props ->
               modifier =
@@ -35,7 +38,7 @@ defmodule LiveViewNativeSwiftUi.Modifiers do
               acc
           end
         end)
-        |> Enum.sort_by(fn %{type: type} -> type end)
+        |> IO.inspect()
 
       case modifiers do
         [] ->

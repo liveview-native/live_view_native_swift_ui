@@ -5,6 +5,7 @@ defmodule LiveViewNativeSwiftUi.Platform do
   defstruct [
     :app_name,
     :bundle_name,
+    :custom_modifiers,
     :project_path,
     default_simulator_device: "iPhone 13",
     default_simulator_os: "iOS",
@@ -15,10 +16,21 @@ defmodule LiveViewNativeSwiftUi.Platform do
   defimpl LiveViewNativePlatform do
     require Logger
 
-    def context(_struct) do
+    alias LiveViewNativeSwiftUi.Modifiers
+
+    def context(struct) do
       %LiveViewNativePlatform.Context{
-        modifiers: %LiveViewNativeSwiftUi.Modifiers{},
+        custom_modifiers: struct.custom_modifiers || [],
+        modifiers: %LiveViewNativeSwiftUi.Modifiers{stack: []},
         platform_id: :ios,
+        platform_modifiers: [
+          frame: Modifiers.Frame,
+          list_row_insets: Modifiers.ListRowInsets,
+          list_row_separator: Modifiers.ListRowSeparator,
+          navigation_title: Modifiers.NavigationTitle,
+          padding: Modifiers.Padding,
+          tint: Modifiers.Tint
+        ],
         template_engine: LiveViewNative.Engine,
         template_namespace: SwiftUi
       }

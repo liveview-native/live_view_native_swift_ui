@@ -4,7 +4,7 @@ defmodule LiveViewNativeSwiftUi.MixProject do
   def project do
     [
       app: :live_view_native_swift_ui,
-      version: "0.0.3",
+      version: "0.0.4",
       elixir: "~> 1.13",
       description: "LiveView Native platform for SwiftUI",
       package: package(),
@@ -16,7 +16,7 @@ defmodule LiveViewNativeSwiftUi.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :live_view_native_platform]
     ]
   end
 
@@ -25,7 +25,7 @@ defmodule LiveViewNativeSwiftUi.MixProject do
     [
       {:jason, "~> 1.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:live_view_native_platform, "~> 0.0.3"}
+      {:live_view_native_platform, "~> 0.0.4"}
     ]
   end
 
