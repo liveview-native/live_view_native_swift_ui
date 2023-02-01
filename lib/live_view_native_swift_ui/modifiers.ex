@@ -5,7 +5,9 @@ defmodule LiveViewNativeSwiftUi.Modifiers do
   ]
 
   def encode_map(%{} = map) do
+    # JSON-encode each value
     Enum.into(map, %{})
+      |> Map.new(fn term -> put_elem(term, 1, Jason.encode!(elem(term, 1))) end)
   end
 
   defimpl LiveViewNativePlatform.Modifiers do
