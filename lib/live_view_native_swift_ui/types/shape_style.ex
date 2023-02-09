@@ -118,7 +118,6 @@ defmodule LiveViewNativeSwiftUi.Types.ShapeStyle do
 
   # Modifiers
   def opacity(root, opacity), do: %__MODULE__{style: :opacity, props: %{ :root => to_map(root), :opacity => opacity }}
-  @spec blend_mode(atom | %{:props => any, :style => any, optional(any) => any}, any) :: any
   def blend_mode(root, blend_mode), do: %__MODULE__{style: :blendMode, props: %{ :root => to_map(root), :blendMode => blend_mode }}
   def shadow(root, style, radius, options \\ []) do
     color = Keyword.get(options, :color)
